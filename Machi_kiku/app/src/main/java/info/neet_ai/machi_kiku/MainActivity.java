@@ -12,11 +12,14 @@ public class MainActivity extends AppCompatActivity {
     int names[] = {R.drawable.chika, R.drawable.dia, R.drawable.hanamaru,
             R.drawable.kanan, R.drawable.mari, R.drawable.riko,
             R.drawable.ruby, R.drawable.yoshiko, R.drawable.you};
+    long starttime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        starttime = System.currentTimeMillis();
 
         final ImageButton img_b = (ImageButton)findViewById(R.id.imageButton);
         img_b.setOnClickListener(new View.OnClickListener() {
