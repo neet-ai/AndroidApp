@@ -19,12 +19,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <info.neet_ai.machi_kiku.CircleImageView
+            <!--<info.neet_ai.machi_kiku.CircleImageView-->
+            <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:id="@+id/drawer_account_image"
-                android:src="@drawable/ruby"
-                android:layout_margin="5dp" />
+                android:src="@drawable/music_button"
+                android:layout_margin="5dp"
+                android:scaleType="centerCrop" />
 
             <TextView
                 android:layout_width="wrap_content"

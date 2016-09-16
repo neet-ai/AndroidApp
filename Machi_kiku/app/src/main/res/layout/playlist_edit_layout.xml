@@ -47,8 +47,8 @@
                     android:layout_weight="1" />
 
                 <ImageButton
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:id="@+id/add_music_button"
                     android:layout_gravity="bottom|center_horizontal"
                     android:src="@android:drawable/ic_input_add"
@@ -59,8 +59,8 @@
                     android:layout_alignParentEnd="true" />
 
                 <ImageButton
-                    android:layout_width="70dp"
-                    android:layout_height="100dp"
+                    android:layout_width="60dp"
+                    android:layout_height="80dp"
                     android:id="@+id/finish_edit_button"
                     android:src="@android:drawable/checkbox_on_background"
                     android:scaleType="fitCenter"

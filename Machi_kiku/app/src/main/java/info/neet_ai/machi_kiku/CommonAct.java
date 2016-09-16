@@ -21,6 +21,7 @@ public class CommonAct extends ActionBarActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.gc();
 
         vDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         initDrawer();

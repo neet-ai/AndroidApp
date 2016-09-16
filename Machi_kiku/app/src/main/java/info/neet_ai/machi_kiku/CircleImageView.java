@@ -15,15 +15,24 @@
  */
 package info.neet_ai.machi_kiku;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.ImageView;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class CircleImageView extends ImageView {
     private int canvasSize;
@@ -73,7 +82,7 @@ public class CircleImageView extends ImageView {
 
         //Rectangle to square. Equivarent to ScaleType.CENTER_CROP
         int dim = Math.min(srcBmp.getWidth(), srcBmp.getHeight());
-        Bitmap dstBmp = Bitmap.createBitmap(dim, dim, Bitmap.Config.ARGB_8888);
+        Bitmap dstBmp = Bitmap.createBitmap(dim, dim, Bitmap.Config.ARGB_4444);
 
         Canvas canvas = new Canvas(dstBmp);
         float left = srcBmp.getWidth() > dim ? (dim - srcBmp.getWidth()) / 2 : 0;
@@ -82,6 +91,55 @@ public class CircleImageView extends ImageView {
 
         return dstBmp;
     }
+
+    /*private Bitmap resizeBitmap(Drawable bitmapfile){
+
+        InputStream inputStream = getContentResolver().openInputStream(data.getData());
+
+        // 画像サイズ情報を取得する
+        BitmapFactory.Options imageOptions = new BitmapFactory.Options();
+        imageOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(inputStream, null, imageOptions);
+        Log.v("image", "Original Image Size: " + imageOptions.outWidth + " x " + imageOptions.outHeight);
+
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // もし、画像が大きかったら縮小して読み込む
+        //  今回はimageSizeMaxの大きさに合わせる
+        Bitmap bitmap;
+        int imageSizeMax = 50;
+        inputStream = getContentResolver().openInputStream(data.getData());
+        float imageScaleWidth = (float)imageOptions.outWidth / imageSizeMax;
+        float imageScaleHeight = (float)imageOptions.outHeight / imageSizeMax;
+
+        // もしも、縮小できるサイズならば、縮小して読み込む
+        if (imageScaleWidth > 2 && imageScaleHeight > 2) {
+            BitmapFactory.Options imageOptions2 = new BitmapFactory.Options();
+
+            // 縦横、小さい方に縮小するスケールを合わせる
+            int imageScale = (int)Math.floor((imageScaleWidth > imageScaleHeight ? imageScaleHeight : imageScaleWidth));
+
+            // inSampleSizeには2のべき上が入るべきなので、imageScaleに最も近く、かつそれ以下の2のべき上の数を探す
+            for (int i = 2; i <= imageScale; i *= 2) {
+                imageOptions2.inSampleSize = i;
+            }
+
+            bitmap = BitmapFactory.decodeStream(inputStream, null, imageOptions2);
+            Log.v("image", "Sample Size: 1/" + imageOptions2.inSampleSize);
+        } else {
+            bitmap = BitmapFactory.decodeStream(inputStream);
+        }
+
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

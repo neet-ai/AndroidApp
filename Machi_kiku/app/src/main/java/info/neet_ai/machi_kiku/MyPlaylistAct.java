@@ -12,6 +12,7 @@ public class MyPlaylistAct extends CommonAct {
         setContentView(R.layout.myplaylist_layout);
         super.onCreate(savedInstanceState);
 
+        //＋ボタン押下
         final ImageButton add_pl_b = (ImageButton)findViewById(R.id.add_playlist_button);
         add_pl_b.setOnClickListener(new View.OnClickListener() {
             @Override

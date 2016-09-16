@@ -29,7 +29,8 @@
             android:layout_weight="1"
             android:contentDescription="@string/map_button_string"
             android:layout_rowWeight="1"
-            android:layout_columnWeight="1" />
+            android:layout_columnWeight="1"
+            android:scaleType="centerCrop" />
 
         <ImageButton
             android:layout_width="match_parent"
@@ -39,7 +40,8 @@
             android:layout_weight="1"
             android:contentDescription="@string/playlist_button_string"
             android:layout_rowWeight="1"
-            android:layout_columnWeight="1" />
+            android:layout_columnWeight="1"
+            android:scaleType="centerCrop" />
 
 
         <include layout="@layout/m_ctrl_layout" android:id="@+id/include_m_ctrl"/>
