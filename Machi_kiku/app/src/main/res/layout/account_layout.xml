@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawerLayout"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- The main content view -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <info.neet_ai.machi_kiku.CircleImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/drawer_account_image"
+                android:src="@drawable/ruby"
+                android:layout_margin="5dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/account_name_default"
+                android:id="@+id/account_name_top"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="4" />
+
+        </LinearLayout>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/listView"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <include layout="@layout/m_ctrl_layout" android:id="@+id/include_m_ctrl"/>
+
+    </LinearLayout>
+
+    <!-- nav drawer:ここをstart側に寄せる -->
+    <include layout="@layout/drawer_layout" android:id="@+id/include_drawer"/>
+
+</android.support.v4.widget.DrawerLayout>
