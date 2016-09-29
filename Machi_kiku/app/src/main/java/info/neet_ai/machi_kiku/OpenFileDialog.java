@@ -2,6 +2,9 @@ package info.neet_ai.machi_kiku;
 
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.util.Log;
+
+import java.io.File;
 
 public class OpenFileDialog {
     public OpenFileDialog() {
@@ -71,13 +74,32 @@ public class OpenFileDialog {
         java.io.File write(java.io.File file);
         java.io.File append(java.io.File file);
         void read(java.io.File file);
+        void getpath(String filepath);
         String toString();
     }
 
     public enum OpenMode {
-        Write,Append,Read
+        Write,Append,Read,Getpath
     }
-    public OpenFileAction openFileAction;
+    public OpenFileAction openFileAction = new OpenFileAction() {
+        @Override
+        public File write(File file) {
+            return null;
+        }
+
+        @Override
+        public File append(File file) {
+            return null;
+        }
+
+        @Override
+        public void read(File file) {
+        }
+
+        @Override
+        public void getpath(String filepath) {
+        }
+    };
     private String path;
     public String[] items;
     public String[] MenuWords = {"Open", "Open ...", "Move", "Cancel"};
@@ -112,6 +134,10 @@ public class OpenFileDialog {
                                     break;
                                 case Read:
                                     openFileAction.read(file);
+                                    break;
+                                case Getpath:
+                                    //Log.v("clear", file.getPath());
+                                    openFileAction.getpath(path + items[i]);
                                     break;
                                 default:
                                     android.util.Log.d("FileState", openFileAction.toString());
