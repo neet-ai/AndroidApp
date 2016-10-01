@@ -34,6 +34,7 @@ public class MyPlaylistAct extends CommonAct {
         });
     }
 
+    //起動時　リスト表示
     @Override
     protected void onResume() {
         super.onResume();
