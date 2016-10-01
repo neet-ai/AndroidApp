@@ -22,12 +22,12 @@ public class MainAct extends CommonAct{
         super.onCreate(savedInstanceState);
     }
 
-    private void initDrawer() {
+    /*private void initDrawer() {
         // （3本線の）切り替えボタンの生成
         vDrawerToggle = new ActionBarDrawerToggle(this, vDrawerLayout, R.string.app_name, R.string.app_name);
         vDrawerToggle.setDrawerIndicatorEnabled(true);
         vDrawerLayout.setDrawerListener(vDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-    }
+    }*/
 }

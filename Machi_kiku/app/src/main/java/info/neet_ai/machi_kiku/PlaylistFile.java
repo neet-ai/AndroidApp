@@ -4,24 +4,28 @@ package info.neet_ai.machi_kiku;
  * Created by User_h on 2016/09/29.
  */
 
-public class MusicFile {
-    String title;
-    String artist;
+public class PlaylistFile {
+    String name;
+    String creator;
     String path;
     long length;
     long id;
 
-    public String getTitle(){
-        return this.title;
+    public String getName(){
+        return this.name;
     }
-    public void setTitle(String title){
-        this.title = title;
+    public void setName(String name){
+        this.name = name;
     }
-    public String getArtist(){
-        return this.artist;
+    public String getCreator(){
+        return this.creator;
     }
-    public void setArtist(String artist){
-        this.artist = artist;
+    public void setArtist(String creator){
+        this.creator = creator;
+    }
+    public void setNameAndCreator(String name, String creator){
+        this.name = name;
+        this.creator = creator;
     }
     public String getPath(){
         return this.path;
@@ -40,10 +44,6 @@ public class MusicFile {
     }
     public void setId(long id){
         this.id = id;
-    }
-    public String makePlayList(){
-        String a = "EXTINF:" + Long.toString(length) + ", " + artist + " - " + title + "\n";
-        return "\n\n" + a + path;
     }
 
 }

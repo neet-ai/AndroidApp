@@ -3,6 +3,7 @@ package info.neet_ai.machi_kiku;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaMetadataRetriever;
@@ -11,11 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -53,12 +56,36 @@ public class PlaylistEditAct extends CommonAct{
             }
         });
 
+        //プレイリスト名
+        final EditText playlistname = (EditText)findViewById(R.id.playlist_editname_top);
+
         //＋ボタン押下
         final ImageButton add_m_b = (ImageButton)findViewById(R.id.add_music_button);
         add_m_b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ofdfrag.show(getFragmentManager(), "file_opener");
+            }
+        });
+
+        //決定ボタン押下
+        final ImageButton finish_e_b = (ImageButton)findViewById(R.id.finish_edit_button);
+        finish_e_b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String PlaylistData = "#EXTM3U";
+                for(MusicFile i : list){
+                    PlaylistData += i.makePlayList();
+                }
+                FileOutputStream fileOutputstream = null;
+                try {
+                    String file = playlistname.getText() + " - made by " + "アカウント名" + ".M3U";
+                    fileOutputstream = openFileOutput(file, Context.MODE_PRIVATE);
+                    fileOutputstream.write(PlaylistData.getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                finish();
             }
         });
     }
@@ -95,14 +122,13 @@ public class PlaylistEditAct extends CommonAct{
                     Log.v("clear", filepath);
                     String suffix = getSuffix(filepath);
                     Log.v("clear", suffix);
-                    if(suffix.equals("mp3") || suffix.equals("m4a")){
-                       /* MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                        mmr.setDataSource(filepath);
+                    if(suffix.equals("mp3") || suffix.equals("m4a") || suffix.equals("rc")){
                         MusicFile mf = new MusicFile();
+                        /*MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                        mmr.setDataSource(filepath);
                         mf.setTitle(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
                         mf.setArtist(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
                         Log.v("clear", mf.getTitle());*/
-                        MusicFile mf = new MusicFile();
                         mf.setTitle(filepath);
                         mf.setArtist("dummy");
                         list.add(mf);
