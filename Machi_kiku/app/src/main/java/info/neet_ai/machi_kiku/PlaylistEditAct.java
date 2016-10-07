@@ -77,9 +77,12 @@ public class PlaylistEditAct extends CommonAct{
                 for(MusicFile i : list){
                     PlaylistData += i.makePlayList();
                 }
+                PlaylistFile plf = new PlaylistFile();
+                plf.setName(playlistname.getText().toString());
+                plf.setCreator("アカウント名");
                 FileOutputStream fileOutputstream = null;
                 try {
-                    String file = playlistname.getText() + " - made by " + "アカウント名" + ".M3U";
+                    String file =  plf.makeFileName();
                     fileOutputstream = openFileOutput(file, Context.MODE_PRIVATE);
                     fileOutputstream.write(PlaylistData.getBytes());
                 } catch (IOException e) {

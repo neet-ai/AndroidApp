@@ -45,7 +45,13 @@ public class MyPlaylistAct extends CommonAct {
         File path = this.getFilesDir();
         File[] filelist = path.listFiles();
         for (File i : filelist){
-            try {
+            int extension = i.getName().lastIndexOf(".M3U");
+            if (extension != -1){
+                PlaylistFile pf = new PlaylistFile();
+                pf.extractFileName(i.getName());
+            }
+
+            /*try {
                 String str1 = null;
                 int point = i.getName().lastIndexOf(".");
                 if (point != -1) {
@@ -58,7 +64,7 @@ public class MyPlaylistAct extends CommonAct {
                 }
             }catch(ArrayIndexOutOfBoundsException aioobe){
                 Log.v("error + " + i.getName(), aioobe.getMessage());
-            };
+            };*/
         }
         adapter.setPlaylistList(list);
         lv.setAdapter(adapter);

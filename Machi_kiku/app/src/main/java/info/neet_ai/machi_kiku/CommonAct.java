@@ -2,10 +2,13 @@ package info.neet_ai.machi_kiku;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,10 +16,43 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class CommonAct extends ActionBarActivity{
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class CommonAct extends AppCompatActivity {//ActionBarActivity{
     private DrawerLayout vDrawerLayout;
     private ActionBarDrawerToggle vDrawerToggle;
     private ListView vListView;
+    private PlaylistFile plf;
+    private ArrayList<MusicFile> mfarray = new ArrayList();
+
+    public void setPlaylist(String playlistpath){
+        File file = new File(playlistpath);
+        plf.extractFileName(file.getName());
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String str1 = br.readLine();
+            String str2 = null;
+            while(str1 != null){
+                if(str1.indexOf("#EXTINF") == 0){
+                    str2 = br.readLine();
+                    MusicFile mf = new MusicFile();
+                    mf.extractPlayList(str1, str2);
+                    mfarray.add(mf);
+                }
+                str1 = br.readLine();
+            }
+            br.close();
+        } catch (FileNotFoundException e) {
+            Log.v("error", "指定パスにファイルがありません。");
+        } catch (IOException e) {
+            Log.v("error", "ファイルが読み込めません。");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +61,8 @@ public class CommonAct extends ActionBarActivity{
 
         vDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         initDrawer();
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         vListView = (ListView) findViewById(R.id.drawer_list);
         vListView.setAdapter(new ArrayAdapter<>(
