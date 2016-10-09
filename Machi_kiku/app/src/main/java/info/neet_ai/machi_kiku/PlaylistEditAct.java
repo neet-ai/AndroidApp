@@ -17,14 +17,21 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 public class PlaylistEditAct extends CommonAct{
+    private PlaylistFile plf = new PlaylistFile();
     private ArrayList<MusicFile> list = new ArrayList<>();
+    private ListView lv;
+    private MusicListAdapter adapter;
+    private EditText playlistname;
 
     public static String getSuffix(String fileName) {
         if (fileName == null) return "null";
@@ -40,8 +47,8 @@ public class PlaylistEditAct extends CommonAct{
         setContentView(R.layout.playlist_edit_layout);
         super.onCreate(savedInstanceState);
 
-        final ListView lv = (ListView) findViewById(R.id.listView);
-        final MusicListAdapter adapter = new MusicListAdapter(this);
+        lv = (ListView) findViewById(R.id.listView);
+         adapter = new MusicListAdapter(this);
 
         //ファイルダイアログ
         final OFDFrag ofdfrag = new OFDFrag();
@@ -57,7 +64,7 @@ public class PlaylistEditAct extends CommonAct{
         });
 
         //プレイリスト名
-        final EditText playlistname = (EditText)findViewById(R.id.playlist_editname_top);
+        playlistname = (EditText)findViewById(R.id.playlist_editname_top);
 
         //＋ボタン押下
         final ImageButton add_m_b = (ImageButton)findViewById(R.id.add_music_button);
@@ -77,7 +84,7 @@ public class PlaylistEditAct extends CommonAct{
                 for(MusicFile i : list){
                     PlaylistData += i.makePlayList();
                 }
-                PlaylistFile plf = new PlaylistFile();
+                plf = new PlaylistFile();
                 plf.setName(playlistname.getText().toString());
                 plf.setCreator("アカウント名");
                 FileOutputStream fileOutputstream = null;
@@ -94,6 +101,52 @@ public class PlaylistEditAct extends CommonAct{
             }
         });
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    protected void onResume() {
+        super.onResume();
+        String filepath = getIntent().getStringExtra("playlist_filepath");
+        getExistPlaylist(filepath);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void getExistPlaylist(String playlistpath){
+        this.plf = new PlaylistFile();
+        this.list = new ArrayList();
+
+        File file = new File(playlistpath);
+        this.plf.extractFileName(file.getName());
+        this.plf.setPath(playlistpath);
+        try {
+            playlistname.setText(this.plf.getName());
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String str1 = br.readLine();
+            String str2 = null;
+            while(str1 != null){
+                Log.v("clear_str1", str1);
+                if(str1.indexOf("#EXTINF") == 0){
+                    str2 = br.readLine();
+                    Log.v("clear_str2", str2);
+                    MusicFile mf = new MusicFile();
+                    mf.extractPlayList(str1, str2);
+                    this.list.add(mf);
+                }
+                str1 = br.readLine();
+            }
+            this.adapter.setMusicList(this.list);
+            this.lv.setAdapter(this.adapter);
+            this.adapter.notifyDataSetChanged();
+            br.close();
+        } catch (FileNotFoundException e) {
+            Log.v("error", "指定パスにファイルがありません。");
+        } catch (IOException e) {
+            Log.v("error", "ファイルが読み込めません。");
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public interface ListChgListener{
         void ArrayChg(MusicFile mf);

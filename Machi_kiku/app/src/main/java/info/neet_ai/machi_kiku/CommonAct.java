@@ -28,12 +28,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CommonAct extends ActionBarActivity{ //AppCompatActivity {
+public class CommonAct extends ActionBarActivity implements MediaPlayer.OnCompletionListener { //AppCompatActivity {
     private DrawerLayout vDrawerLayout;
     private ActionBarDrawerToggle vDrawerToggle;
     private ListView vListView;
     private ImageButton ssButton;
     private TextView plname_tv;
+    private TextView title_tv;
+    private TextView artist_tv;
 
     static protected MediaPlayer mediaPlayer;
     static protected PlaylistFile plf = null;
@@ -85,22 +87,14 @@ public class CommonAct extends ActionBarActivity{ //AppCompatActivity {
         ssButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(plf != null) {
-                    if (playing == 0) {
-                        ssButton.setImageResource(android.R.drawable.ic_media_pause);
-                        playing = 1;
-                        audioPlay(mfarray.get(music_num).getPath());
-                    } else {
-                        ssButton.setImageResource(android.R.drawable.ic_media_play);
-                        playing = 0;
-                        audioStop();
-                    }
-                }
+                audioPlayAndStop();
             }
         });
 
         //プレイリスト名など
         plname_tv = (TextView)findViewById(R.id.playlist_name);
+        title_tv = (TextView)findViewById(R.id.music_name);
+        artist_tv = (TextView)findViewById(R.id.artist_name);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,10 +105,15 @@ public class CommonAct extends ActionBarActivity{ //AppCompatActivity {
             ssButton.setImageResource(android.R.drawable.ic_media_play);
         else
             ssButton.setImageResource(android.R.drawable.ic_media_pause);
-        if(plf != null)
+        if(plf != null) {
             plname_tv.setText(plf.getName());
-        else
-            plname_tv.setText("---");
+            title_tv.setText(mfarray.get(music_num).getTitle());
+            artist_tv.setText(mfarray.get(music_num).getArtist());
+        } else {
+            plname_tv.setText("-----");
+            title_tv.setText("-----");
+            artist_tv.setText("-----");
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,6 +168,9 @@ public class CommonAct extends ActionBarActivity{ //AppCompatActivity {
                 str1 = br.readLine();
             }
             br.close();
+            plname_tv.setText(plf.getName());
+            title_tv.setText(mfarray.get(music_num).getTitle());
+            artist_tv.setText(mfarray.get(music_num).getArtist());
         } catch (FileNotFoundException e) {
             Log.v("error", "指定パスにファイルがありません。");
         } catch (IOException e) {
@@ -177,6 +179,20 @@ public class CommonAct extends ActionBarActivity{ //AppCompatActivity {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void audioPlayAndStop(){
+        if(plf != null) {
+            if (playing == 0) {
+                ssButton.setImageResource(android.R.drawable.ic_media_pause);
+                playing = 1;
+                audioPlay(mfarray.get(music_num).getPath());
+            } else {
+                ssButton.setImageResource(android.R.drawable.ic_media_play);
+                playing = 0;
+                audioStop();
+            }
+        }
+    }
 
     private void audioPlay(String filepath) {
         // 繰り返し再生する場合
@@ -205,6 +221,7 @@ public class CommonAct extends ActionBarActivity{ //AppCompatActivity {
         }
         // 再生する
         mediaPlayer.start();
+        mediaPlayer.setOnCompletionListener(this);
     }
 
     private void audioStop() {
@@ -215,5 +232,11 @@ public class CommonAct extends ActionBarActivity{ //AppCompatActivity {
         // リソースの解放
         mediaPlayer.release();
         mediaPlayer = null;
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        //再生終了検知
+
     }
 }

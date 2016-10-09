@@ -102,7 +102,7 @@ public class OpenFileDialog {
     };
     private String path;
     public String[] items;
-    public String[] MenuWords = {"Open", "Open ...", "Move", "Cancel"};
+    public String[] MenuWords = {"開く", "音楽ファイルの選択", "移動", "閉じる"};
 
     public android.app.AlertDialog.Builder createOpenFileDialog(final android.content.Context context, final OpenFileDialog.OpenMode mode)
             throws java.io.IOException {

@@ -1,6 +1,10 @@
 package info.neet_ai.machi_kiku;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,26 +27,63 @@ public class MyPlaylistAct extends CommonAct {
     private ListView lv;
     private PlaylistListAdapter adapter;
     private ArrayList<PlaylistFile> list = new ArrayList<>();
-    private TextView plname_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.myplaylist_layout);
         super.onCreate(savedInstanceState);
 
-
-        //プレイリスト名など
-        plname_tv = (TextView)findViewById(R.id.playlist_name);
+        //ダイアログ項目実行処理
+        final EditPlaylistFrag eplfrag = new EditPlaylistFrag();
+        eplfrag.addListLongTapListener(new ListLongTapListener() {
+            @Override
+            public void DoAction(int pos, int mode) {
+                String playlistpath = null;
+                switch (mode){
+                    case 0: //選択
+                        playlistpath = list.get(pos).getPath();
+                        setPlaylist(playlistpath);
+                        break;
+                    case 1: //再生
+                        playlistpath = list.get(pos).getPath();
+                        setPlaylist(playlistpath);
+                        audioPlayAndStop();
+                        break;
+                    case 2: //編集
+                        Intent intent = new Intent();
+                        intent.setClassName("info.neet_ai.machi_kiku", "info.neet_ai.machi_kiku.PlaylistEditAct");
+                        intent.putExtra("playlist_filepath", list.get(pos).getPath());
+                        startActivity(intent);
+                        break;
+                    case 3: //削除
+                        deleteFile(list.get(pos).makeFileName());
+                        list.remove(pos);
+                        adapter.setPlaylistList(list);
+                        lv.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+        });
 
         //リストのタップ
         lv = (ListView) findViewById(R.id.listView);
-        // アイテムクリック時ののイベントを追加
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-                Log.v("clear2", String.valueOf(list));
-                String playlistpath = list.get(pos).getPath();
-                setPlaylist(playlistpath);
-                plname_tv.setText(plf.getName());
+        // アイテムクリック時のイベントを追加
+        //lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //    public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+        //        Log.v("clear2", String.valueOf(list));
+        //        String playlistpath = list.get(pos).getPath();
+        //        setPlaylist(playlistpath);
+        //    }
+        //});
+        //ロングタップ時のイベントを追加
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //ここに処理を書く
+                eplfrag.show(getFragmentManager(), "playlist_editable");
+                eplfrag.listpos = position;
+                return false;
             }
         });
 
@@ -97,4 +138,44 @@ public class MyPlaylistAct extends CommonAct {
         lv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public interface ListLongTapListener{
+        void DoAction(int pos, int mode);
+    }
+
+    public static class EditPlaylistFrag extends DialogFragment {
+        //public ArrayList<MusicFile> list = new ArrayList<>();
+        ListLongTapListener listener;
+        public int listpos = 0;
+
+        public void addListLongTapListener(ListLongTapListener listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final String[] items = {"選択", "再生", "編集", "削除"};
+            return  new AlertDialog.Builder(getActivity())
+                    .setTitle("プレイリスト操作")
+                    .setItems(items, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // item_which pressed
+                            listener.DoAction(listpos, which);
+                        }
+                    })
+                    .show();
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+
+            // onPause でダイアログを閉じる場合
+            dismiss();
+        }
+    }
+
 }
