@@ -1,5 +1,7 @@
 package info.neet_ai.machi_kiku;
 
+import android.util.Log;
+
 /**
  * Created by User_h on 2016/09/29.
  */

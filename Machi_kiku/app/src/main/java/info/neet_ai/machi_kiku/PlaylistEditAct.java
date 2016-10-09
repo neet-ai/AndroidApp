@@ -24,7 +24,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 public class PlaylistEditAct extends CommonAct{
-    public ArrayList<MusicFile> list = new ArrayList<>();
+    private ArrayList<MusicFile> list = new ArrayList<>();
 
     public static String getSuffix(String fileName) {
         if (fileName == null) return "null";
@@ -47,12 +47,12 @@ public class PlaylistEditAct extends CommonAct{
         final OFDFrag ofdfrag = new OFDFrag();
         ofdfrag.addListChgListener(new ListChgListener() {
             @Override
-            public void ArrayChg(ArrayList<MusicFile> list) {
-                list.add(ofdfrag.list.get(0));
+            public void ArrayChg(MusicFile mf) {
+                list.add(mf);
                 adapter.setMusicList(list);
                 lv.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
-                ofdfrag.list.remove(0);
+                //ofdfrag.list.remove(0);
             }
         });
 
@@ -85,6 +85,8 @@ public class PlaylistEditAct extends CommonAct{
                     String file =  plf.makeFileName();
                     fileOutputstream = openFileOutput(file, Context.MODE_PRIVATE);
                     fileOutputstream.write(PlaylistData.getBytes());
+                    fileOutputstream.close();
+                    Log.v("clear_PlaylistData", PlaylistData);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -94,11 +96,11 @@ public class PlaylistEditAct extends CommonAct{
     }
 
     public interface ListChgListener{
-        void ArrayChg(ArrayList<MusicFile> list);
+        void ArrayChg(MusicFile mf);
     }
 
     public static class OFDFrag extends DialogFragment{
-        public ArrayList<MusicFile> list = new ArrayList<>();
+        //public ArrayList<MusicFile> list = new ArrayList<>();
         ListChgListener listener;
 
         public void addListChgListener(ListChgListener listener){
@@ -122,20 +124,22 @@ public class PlaylistEditAct extends CommonAct{
                 }
                 @Override
                 public void getpath(String filepath) {
-                    Log.v("clear", filepath);
+                    Log.v("clear_PEA_filepath", filepath);
                     String suffix = getSuffix(filepath);
-                    Log.v("clear", suffix);
+                    //Log.v("clear", suffix);
                     if(suffix.equals("mp3") || suffix.equals("m4a") || suffix.equals("rc")){
                         MusicFile mf = new MusicFile();
-                        /*MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
                         mmr.setDataSource(filepath);
                         mf.setTitle(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
                         mf.setArtist(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
-                        Log.v("clear", mf.getTitle());*/
-                        mf.setTitle(filepath);
-                        mf.setArtist("dummy");
-                        list.add(mf);
-                        listener.ArrayChg(list);
+                        mf.setPath(filepath);
+                        mf.setLength(0);
+                        //Log.v("clear", mf.getTitle());
+                        //mf.setTitle(filepath);
+                        //mf.setArtist("dummy");
+                        //list.add(mf);
+                        listener.ArrayChg(mf);
                     }
                 }
             };
