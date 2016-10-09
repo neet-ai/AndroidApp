@@ -77,13 +77,13 @@ public class MyPlaylistAct extends CommonAct {
         //    }
         //});
         //ロングタップ時のイベントを追加
-        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //ここに処理を書く
                 eplfrag.show(getFragmentManager(), "playlist_editable");
                 eplfrag.listpos = position;
-                return false;
+                //return false;
             }
         });
 
@@ -94,6 +94,7 @@ public class MyPlaylistAct extends CommonAct {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClassName("info.neet_ai.machi_kiku", "info.neet_ai.machi_kiku.PlaylistEditAct");
+                intent.putExtra("playlist_filepath", "");
                 startActivity(intent);
             }
         });

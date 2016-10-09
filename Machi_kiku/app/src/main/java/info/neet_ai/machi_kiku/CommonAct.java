@@ -168,9 +168,16 @@ public class CommonAct extends ActionBarActivity implements MediaPlayer.OnComple
                 str1 = br.readLine();
             }
             br.close();
-            plname_tv.setText(plf.getName());
-            title_tv.setText(mfarray.get(music_num).getTitle());
-            artist_tv.setText(mfarray.get(music_num).getArtist());
+            if(mfarray.size() > 0) {
+                plname_tv.setText(plf.getName());
+                title_tv.setText(mfarray.get(music_num).getTitle());
+                artist_tv.setText(mfarray.get(music_num).getArtist());
+            } else {
+                plname_tv.setText(plf.getName());
+                plf = null;
+                title_tv.setText("-----");
+                artist_tv.setText("-----");
+            }
         } catch (FileNotFoundException e) {
             Log.v("error", "指定パスにファイルがありません。");
         } catch (IOException e) {
