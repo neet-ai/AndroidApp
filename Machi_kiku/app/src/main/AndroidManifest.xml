@@ -19,6 +19,10 @@
             </intent-filter>
         </activity>
 
+
+        <activity android:name=".CommonAct">
+        </activity>
+
         <activity android:name=".AccountAct">
         </activity>
 
