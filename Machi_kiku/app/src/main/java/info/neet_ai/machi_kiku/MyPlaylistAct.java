@@ -41,11 +41,12 @@ public class MyPlaylistAct extends CommonAct {
                 String playlistpath = null;
                 switch (mode){
                     case 0: //選択
-                        playlistpath = list.get(pos).getPath();
+                        audioReset();
                         setPlaylist(list, pos);
                         break;
                     case 1: //再生
                         //playlistpath = list.get(pos).getPath();
+                        audioReset();
                         setPlaylist(list, pos);
                         audioPlayAndStop();
                         break;
@@ -119,21 +120,6 @@ public class MyPlaylistAct extends CommonAct {
                 pf.setPath(i.getPath());
                 list.add(pf);
             }
-
-            /*try {
-                String str1 = null;
-                int point = i.getName().lastIndexOf(".");
-                if (point != -1) {
-                    str1 = i.getName().substring(0, point);
-                    Log.v("clear", str1);
-                    String[] str2 = str1.split("( - made by )", 0);
-                    PlaylistFile pf = new PlaylistFile();
-                    pf.setNameAndCreator(str2[0], str2[1]);
-                    list.add(pf);
-                }
-            }catch(ArrayIndexOutOfBoundsException aioobe){
-                Log.v("error + " + i.getName(), aioobe.getMessage());
-            };*/
         }
         adapter.setPlaylistList(list);
         lv.setAdapter(adapter);

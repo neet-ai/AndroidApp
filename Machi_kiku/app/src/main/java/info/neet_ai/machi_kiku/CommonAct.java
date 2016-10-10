@@ -266,7 +266,6 @@ public class CommonAct extends ActionBarActivity implements MediaPlayer.OnComple
     private Boolean setPlaylistContent(String playlistpath, ArrayList<PlaylistFile> plflists, int pos){
         audioStop();
         if(playing == 2) playing = 0;
-        //ssButton.setImageResource(android.R.drawable.ic_media_play);
 
         plfarray = plflists;
         playlist_num = pos;
@@ -365,6 +364,14 @@ public class CommonAct extends ActionBarActivity implements MediaPlayer.OnComple
                     break;
             }
         }
+    }
+
+    public void audioReset(){
+        playtime = 0;
+        playing = 0;
+        ssButton.setImageResource(android.R.drawable.ic_media_play);
+        sb.setProgress(playtime);
+        audioStop();
     }
 
     private void audioPlay(String filepath) {
