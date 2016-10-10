@@ -37,14 +37,23 @@ android:background="@android:color/black">
         android:textColor="@android:color/white" />
 </LinearLayout>
 
-<LinearLayout
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/MusicSeekBar"
+        android:layout_gravity="center_horizontal"
+        android:background="@android:color/black"
+        android:max="1000000"
+        android:progress="0" />
+
+    <LinearLayout
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <ImageButton
         android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:id="@+id/previous_button"
         android:src="@android:drawable/ic_media_previous"
         android:scaleType="centerCrop"
@@ -53,7 +62,7 @@ android:background="@android:color/black">
 
     <ImageButton
         android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:id="@+id/back_button"
         android:src="@android:drawable/ic_media_rew"
         android:scaleType="centerCrop"
@@ -62,7 +71,7 @@ android:background="@android:color/black">
 
     <ImageButton
         android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:id="@+id/start_stop_button"
         android:src="@android:drawable/ic_media_play"
         android:scaleType="centerCrop"
@@ -71,7 +80,7 @@ android:background="@android:color/black">
 
     <ImageButton
         android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:id="@+id/forward_button"
         android:src="@android:drawable/ic_media_ff"
         android:scaleType="centerCrop"
@@ -80,7 +89,7 @@ android:background="@android:color/black">
 
     <ImageButton
         android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:id="@+id/next_button"
         android:src="@android:drawable/ic_media_next"
         android:scaleType="centerCrop"
