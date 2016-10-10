@@ -48,14 +48,14 @@
                     android:layout_weight="1" />
 
                 <ImageButton
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:id="@+id/add_music_button"
                     android:layout_gravity="bottom|center_horizontal"
                     android:src="@android:drawable/ic_input_add"
                     android:scaleType="fitCenter"
                     android:background="@android:color/transparent"
-                    android:layout_marginEnd="70dp"
+                    android:layout_marginEnd="60dp"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
                     android:focusable="true"
@@ -64,8 +64,8 @@
                 </ImageButton>
 
                 <ImageButton
-                    android:layout_width="60dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="70dp"
                     android:id="@+id/finish_edit_button"
                     android:src="@android:drawable/checkbox_on_background"
                     android:scaleType="fitCenter"

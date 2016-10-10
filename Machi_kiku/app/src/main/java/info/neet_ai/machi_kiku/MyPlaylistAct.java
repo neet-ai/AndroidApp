@@ -42,11 +42,11 @@ public class MyPlaylistAct extends CommonAct {
                 switch (mode){
                     case 0: //選択
                         playlistpath = list.get(pos).getPath();
-                        setPlaylist(playlistpath);
+                        setPlaylist(list, pos);
                         break;
                     case 1: //再生
-                        playlistpath = list.get(pos).getPath();
-                        setPlaylist(playlistpath);
+                        //playlistpath = list.get(pos).getPath();
+                        setPlaylist(list, pos);
                         audioPlayAndStop();
                         break;
                     case 2: //編集

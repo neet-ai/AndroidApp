@@ -27,19 +27,26 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class CommonAct extends ActionBarActivity implements MediaPlayer.OnCompletionListener { //AppCompatActivity {
     private DrawerLayout vDrawerLayout;
     private ActionBarDrawerToggle vDrawerToggle;
     private ListView vListView;
     private ImageButton ssButton;
+    private ImageButton prButton;
+    private ImageButton bkButton;
+    private ImageButton frButton;
+    private ImageButton nxButton;
     private TextView plname_tv;
     private TextView title_tv;
     private TextView artist_tv;
 
     static protected MediaPlayer mediaPlayer;
     static protected PlaylistFile plf = null;
+    static protected ArrayList<PlaylistFile> plfarray = new ArrayList();
     static protected ArrayList<MusicFile> mfarray = new ArrayList();
+    static protected int playlist_num = 0;
     static protected int music_num = 0;
     static protected int playing = 0;
     static protected int playtime = 0;
@@ -49,6 +56,7 @@ public class CommonAct extends ActionBarActivity implements MediaPlayer.OnComple
         super.onCreate(savedInstanceState);
         System.gc();
 
+        //ドロワー
         vDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         initDrawer();
         vListView = (ListView) findViewById(R.id.drawer_list);
@@ -90,6 +98,55 @@ public class CommonAct extends ActionBarActivity implements MediaPlayer.OnComple
                 audioPlayAndStop();
             }
         });
+        prButton = (ImageButton) findViewById(R.id.previous_button);
+        prButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                audioStop();
+                if(plfarray.size() > 0) {
+                    music_num = 0;
+                    int pos = playlist_num - 1;
+                    if (pos < 0) pos = plfarray.size() - 1;
+                    setPlaylist(plfarray, pos);
+                    checkonPlayable();
+                }
+            }
+        });
+        nxButton = (ImageButton) findViewById(R.id.next_button);
+        nxButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                audioStop();
+                if(plfarray.size() > 0) {
+                    music_num = 0;
+                    int pos = playlist_num + 1;
+                    if(pos > plfarray.size() - 1) pos = 0;
+                    setPlaylist(plfarray, pos);
+                    checkonPlayable();
+                }
+            }
+        });
+        bkButton = (ImageButton) findViewById(R.id.back_button);
+        bkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                audioStop();
+                music_num--;
+                if(music_num < 0) music_num = mfarray.size() - 1;
+                checkonPlayable();
+            }
+        });
+        frButton = (ImageButton) findViewById(R.id.forward_button);
+        frButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                audioStop();
+                music_num++;
+                if(music_num > mfarray.size() - 1) music_num = 0;
+                checkonPlayable();
+            }
+        });
+
 
         //プレイリスト名など
         plname_tv = (TextView)findViewById(R.id.playlist_name);
@@ -101,14 +158,18 @@ public class CommonAct extends ActionBarActivity implements MediaPlayer.OnComple
 
     protected void onResume() {
         super.onResume();
-        if(playing == 0)
-            ssButton.setImageResource(android.R.drawable.ic_media_play);
-        else
+        if(playing == 1)
             ssButton.setImageResource(android.R.drawable.ic_media_pause);
+        else
+            ssButton.setImageResource(android.R.drawable.ic_media_play);
         if(plf != null) {
             plname_tv.setText(plf.getName());
             title_tv.setText(mfarray.get(music_num).getTitle());
             artist_tv.setText(mfarray.get(music_num).getArtist());
+        } else if (plfarray.size() > 0){
+            plname_tv.setText(plfarray.get(playlist_num).getName());
+            title_tv.setText("-----");
+            artist_tv.setText("-----");
         } else {
             plname_tv.setText("-----");
             title_tv.setText("-----");
@@ -143,15 +204,31 @@ public class CommonAct extends ActionBarActivity implements MediaPlayer.OnComple
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public Boolean setPlaylist(String playlistpath){
+        ArrayList<PlaylistFile> plflists = new ArrayList();
+        return setPlaylistContent(playlistpath, plflists, 0);
+    }
 
-    public void setPlaylist(String playlistpath){
-        plf = new PlaylistFile();
+    public Boolean setPlaylist(ArrayList<PlaylistFile> plflists, int pos){
+        String playlistpath = plflists.get(pos).getPath();
+        return setPlaylistContent(playlistpath, plflists, pos);
+    }
+
+    private Boolean setPlaylistContent(String playlistpath, ArrayList<PlaylistFile> plflists, int pos){
+        plfarray = plflists;
+        playlist_num = pos;
+        File file = new File(playlistpath);
+        if(plflists.size() > 0){
+            plf = plfarray.get(pos);
+        } else {
+            plf = new PlaylistFile();
+            plf.extractFileName(file.getName());
+            plf.setPath(playlistpath);
+            plfarray.add(plf);
+        }
         mfarray = new ArrayList();
         music_num = 0;
 
-        File file = new File(playlistpath);
-        plf.extractFileName(file.getName());
-        plf.setPath(playlistpath);
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String str1 = br.readLine();
@@ -168,35 +245,69 @@ public class CommonAct extends ActionBarActivity implements MediaPlayer.OnComple
                 str1 = br.readLine();
             }
             br.close();
-            if(mfarray.size() > 0) {
-                plname_tv.setText(plf.getName());
-                title_tv.setText(mfarray.get(music_num).getTitle());
-                artist_tv.setText(mfarray.get(music_num).getArtist());
-            } else {
-                plname_tv.setText(plf.getName());
-                plf = null;
-                title_tv.setText("-----");
-                artist_tv.setText("-----");
-            }
+            return setPlayingInfo();
         } catch (FileNotFoundException e) {
             Log.v("error", "指定パスにファイルがありません。");
+            plname_tv.setText("-----");
+            title_tv.setText("-----");
+            artist_tv.setText("-----");
         } catch (IOException e) {
             Log.v("error", "ファイルが読み込めません。");
         }
+        return false;
+    }
+
+    public Boolean setPlayingInfo(){
+        if(mfarray.size() > 0) {
+            plname_tv.setText(plf.getName());
+            title_tv.setText(mfarray.get(music_num).getTitle());
+            artist_tv.setText(mfarray.get(music_num).getArtist());
+            return true;
+        } else {
+            plf = null;
+            plname_tv.setText(plfarray.get(playlist_num).getName());
+            title_tv.setText("-----");
+            artist_tv.setText("-----");
+            return false;
+        }
+    }
+
+    private void checkonPlayable(){
+        if(!setPlayingInfo()) {
+            ssButton.setImageResource(android.R.drawable.ic_media_play);
+            playing = 0;
+        } else if(playing == 1)
+            audioPlay(mfarray.get(music_num).getPath());
+        else
+            playing = 0;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
+    /*public void audioPlayAndStop(){
+        audioPlayAndStopContents(playing);
+    }
+    public void audioPlayAndStop(int chg_playing){
+        audioPlayAndStopContents(1 - chg_playing);
+    }*/
     public void audioPlayAndStop(){
         if(plf != null) {
-            if (playing == 0) {
-                ssButton.setImageResource(android.R.drawable.ic_media_pause);
-                playing = 1;
-                audioPlay(mfarray.get(music_num).getPath());
-            } else {
-                ssButton.setImageResource(android.R.drawable.ic_media_play);
-                playing = 0;
-                audioStop();
+            switch (playing){
+                case 0:
+                    ssButton.setImageResource(android.R.drawable.ic_media_pause);
+                    playing = 1;
+                    audioPlay(mfarray.get(music_num).getPath());
+                    break;
+                case 1:
+                    ssButton.setImageResource(android.R.drawable.ic_media_play);
+                    playing = 2;
+                    audioPause();
+                    break;
+                case 2:
+                    ssButton.setImageResource(android.R.drawable.ic_media_pause);
+                    playing = 1;
+                    audioContinue();
+                    break;
             }
         }
     }
@@ -232,18 +343,32 @@ public class CommonAct extends ActionBarActivity implements MediaPlayer.OnComple
     }
 
     private void audioStop() {
-        // 再生終了
-        mediaPlayer.stop();
-        // リセット
-        mediaPlayer.reset();
-        // リソースの解放
-        mediaPlayer.release();
-        mediaPlayer = null;
+        if(mediaPlayer != null) {
+            // 再生終了
+            mediaPlayer.stop();
+            // リセット
+            mediaPlayer.reset();
+            // リソースの解放
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
+    private void audioPause(){
+        if(mediaPlayer != null) {
+            mediaPlayer.pause();
+        }
+    }
+
+    private void audioContinue(){
+        if(mediaPlayer != null) {
+            mediaPlayer.start();
+        }
     }
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
         //再生終了検知
-
+        frButton.callOnClick();
     }
 }
