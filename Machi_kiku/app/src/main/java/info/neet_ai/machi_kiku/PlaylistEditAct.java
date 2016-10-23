@@ -201,7 +201,7 @@ public class PlaylistEditAct extends CommonAct {
         });
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        //client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,7 +270,7 @@ public class PlaylistEditAct extends CommonAct {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
     @Override
     public void onStart() {
         super.onStart();
@@ -309,7 +309,7 @@ public class PlaylistEditAct extends CommonAct {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
-    }
+    }*/
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
